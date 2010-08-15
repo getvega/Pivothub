@@ -1,0 +1,42 @@
+//In the background page:
+<html>
+
+	<script type="text/javascript" charset="utf-8" src="jquery.js"></script>
+
+	<script>
+
+	chrome.extension.onRequest.addListener(currentTabRequest);
+
+	function currentTabRequest(request, sender, sendResponse)
+	{
+    	if (request.action == "pageStart") {
+        	chrome.pageAction.show(sender.tab.id);
+    	}
+	}
+
+	chrome.pageAction.onClicked.addListener(onClicked);
+
+	function onClicked(tab)
+	{
+    	var query = prompt("Search");
+    	if (!query) return;
+    	
+    	searchStory(query);
+	}
+	
+	function searchStory(query) {
+		chrome.tabs.getSelected(null, function(tab) {
+		    chrome.tabs.sendRequest(tab.id, {query: query}, function(stories) {
+		    	if (stories && stories.length) {
+		    		prompt(stories.length > 1 ? "!! " + stories.length + " matches" : "Match", "[Fixes #" + stories[0].id + "] " + stories[0].name.replace(/<\/?[^>]+(>|$)/g, ""));
+		    	} else {
+		    		alert("not found");
+		    	}
+  			});
+		});
+	}
+	
+	</script>
+  
+  
+</html>

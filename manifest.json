@@ -1,0 +1,20 @@
+{
+  "name": "PivotHub",
+  "description": "A Google Chrome extension for a better integration between Pivotal Tracker and GitHub.",
+  "version": "1.0",
+  
+  "background_page": "background.html",
+  
+  "page_action": {
+    "default_icon": "icon.png", 
+    "default_title": "PivotHub"
+  },
+  
+   "content_scripts": [ {
+      "js": [ "jquery.js", "content.js" ],
+      "matches": [ "http://www.pivotaltracker.com/projects/*", "https://www.pivotaltracker.com/projects/*" ],
+      "run_at": "document_start"
+   } ],
+   
+   "permissions": [ "tabs", "https://www.pivotaltracker.com/*", "http://www.pivotaltracker.com/*" ]
+}
