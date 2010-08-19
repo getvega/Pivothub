@@ -10,4 +10,7 @@ The extension facilitates this by prompting you the name of the story - it will 
 
 Learn more about GitHub's post hook for Pivotal here:  http://www.pivotaltracker.com/help/api?version=v3#scm_post_commit
 
+![Search a story](http://github.com/getvega/Pivothub/raw/master/doc/overview1.png)
+![Commit syntax for posthook](http://github.com/getvega/Pivothub/raw/master/doc/overview2.png)
+
 ## Feature 2 - let's think about it ;)
