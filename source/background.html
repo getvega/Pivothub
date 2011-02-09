@@ -4,15 +4,24 @@
 	<script type="text/javascript" charset="utf-8" src="jquery.js"></script>
 
 	<script>
-
-	chrome.extension.onRequest.addListener(currentTabRequest);
-
-	function currentTabRequest(request, sender, sendResponse)
+	var pivotalTab = -1;
+	
+	chrome.extension.onRequest.addListener(function(request, sender, sendResponse)
 	{
     	if (request.action == "pageStart") {
-        	chrome.pageAction.show(sender.tab.id);
+    		pivotalTab = sender.tab;
+        	chrome.pageAction.show(pivotalTab.id);
     	}
-	}
+	});
+	
+	// when a fragmented call happens the page actions disappear...
+	// reshow the action
+	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) 
+	{
+		if (pivotalTab.id == tabId) {
+        	chrome.pageAction.show(pivotalTab.id);
+		}
+	});
 
 	chrome.pageAction.onClicked.addListener(onClicked);
 
@@ -25,14 +34,12 @@
 	}
 	
 	function searchStory(query) {
-		chrome.tabs.getSelected(null, function(tab) {
-		    chrome.tabs.sendRequest(tab.id, {query: query}, function(stories) {
-		    	if (stories && stories.length) {
-		    		prompt(stories.length > 1 ? "!! " + stories.length + " matches" : "Match", "[Fixes #" + stories[0].id + "] " + stories[0].name.replace(/<\/?[^>]+(>|$)/g, ""));
-		    	} else {
-		    		alert("not found");
-		    	}
-  			});
+		chrome.tabs.sendRequest(pivotalTab.id, {query: query}, function(stories) {
+			if (stories && stories.length) {
+				prompt(stories.length > 1 ? "!! " + stories.length + " matches" : "Match", "[Fixes #" + stories[0].id + "] " + stories[0].name.replace(/<\/?[^>]+(>|$)/g, ""));
+			} else {
+				alert("not found");
+			}
 		});
 	}
 	
